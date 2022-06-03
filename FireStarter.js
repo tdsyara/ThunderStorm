@@ -120,207 +120,7 @@ Utils.isGameReady = function ()
 
 Utils.errorLog = function (text)
 {
-}
-
-// gameObjects.h.js
-
-class GameObjects
-{
-    // World
-    getWorld                = null; // args: void
-    getGameActions          = null; // args: void
-    getMines                = null; // args: void
-
-    // Tank
-    getLocalPlayer          = null; // args: void
-    getPhysicsComponent     = null; // args: void
-    getHealthComponent      = null; // args: void
-    getCamera               = null; // args: void
-
-    // Weapon
-    getStrikerComponent     = null; // args: void
-}
-
-gameObjects =
-{
-    localPlayer: null,
-    world: null,
-    gameActions: null,
-    mines: null,
-    physicsComponent: null,
-    healthComponent: null,
-    camera: null,
-    strikerComponent: null
-}
-
-// gameObjects.c.js
-
-GameObjects.getWorld = function ()
-{
-    if (gameObjects.world)
-    {
-        return gameObjects.world;
-    }
-
-    let localPlayer = this.getLocalPlayer();
-
-    if (!localPlayer)
-    {
-        return null;
-    }
-
-    return gameObjects.world = localPlayer.at(0).world;
-}
-
-GameObjects.getGameActions = function ()
-{
-    if (gameObjects.gameActions)
-    {
-        return gameObjects.gameActions;
-    }
-
-    let world = this.getWorld();
-
-    if (!world)
-    {
-        return null;
-    }
-
-    return gameObjects.gameActions = Array.from(world.inputManager.input.gameActions_0.map);
-}
-
-GameObjects.getMines = function ()
-{
-    if (gameObjects.mines)
-    {
-        return gameObjects.mines;
-    }
-
-    let world = this.getWorld();
-
-    if (!world)
-    {
-        return null;
-    }
-
-    return gameObjects.mines = world.entities_0.array_hd7ov6$_0.at(0).components_0.array.at(15);
-}
-
-GameObjects.getLocalPlayer = function ()
-{
-    if (gameObjects.localPlayer)
-    {
-        return gameObjects.localPlayer;
-    }
-
-    let rootObject = Utils.getRootObject();
-
-    if (!rootObject)
-    {
-        return null;
-    }
-
-    let subs = rootObject.store.subscribers.array_hd7ov6$_0;
-
-    if (!subs)
-    {
-        return null;
-    }
-
-    for (let i = 0; i < subs.length; i++)
-    {
-        if (subs.at(i).hasOwnProperty("tank") && subs.at(i).tank.tag == "LocalTank")
-            return gameObjects.localPlayer = subs.at(i).tank.components_0.array;
-    }
-
-    return null;
-}
-
-GameObjects.getPhysicsComponent = function ()
-{
-    if (gameObjects.physicsComponent)
-    {
-        return gameObjects.physicsComponent;
-    }
-
-    let localPlayer = this.getLocalPlayer();
-
-    if (!localPlayer)
-    {
-        return null;
-    }
-
-    for (let i = 0; i < localPlayer.length; i++)
-    {
-        if (localPlayer.at(i).hasOwnProperty("tankPhysicsComponent_tczrao$_0"))
-            return gameObjects.physicsComponent = localPlayer.at(i).tankPhysicsComponent_tczrao$_0;
-    }
-
-    return null;
-}
-
-// ПЕРЕДЕЛАТЬ
-GameObjects.getHealthComponent = function ()
-{
-    if (gameObjects.healthComponent)
-    {
-        return gameObjects.healthComponent;
-    }
-
-    let localPlayer = this.getLocalPlayer();
-
-    if (!localPlayer)
-    {
-        return null;
-    }
-
-    return gameObjects.healthComponent = localPlayer.at(1);
-}
-
-GameObjects.getCamera = function ()
-{
-    if (gameObjects.camera)
-    {
-        return gameObjects.camera;
-    }
-
-    let localPlayer = this.getLocalPlayer();
-
-    if (!localPlayer)
-    {
-        return null;
-    }
-
-    for (let i = 0; i < localPlayer.length; i++)
-    {
-        if (localPlayer.at(i).hasOwnProperty("followCamera_w8ai3w$_0"))
-            return gameObjects.camera = localPlayer.at(i).followCamera_0.currState_0;
-    }
-
-    return null;
-}
-
-GameObjects.getStrikerComponent = function ()
-{
-    if (gameObjects.strikerComponent)
-    {
-        return gameObjects.strikerComponent;
-    }
-
-    let localPlayer = this.getLocalPlayer();
-
-    if (!localPlayer)
-    {
-        return null;
-    }
-
-    for (let i = 0; i < localPlayer.length; i++)
-    {
-        if (localPlayer.at(i).hasOwnProperty("strikerWeapon_jjsiik$_0"))
-            return gameObjects.strikerComponent = localPlayer.at(i).strikerWeapon_jjsiik$_0;
-    }
-
-    return null;
+    console.log("[SHIZOVAL] " + text);
 }
 
 // airBreak.h.js
@@ -335,7 +135,7 @@ const airBreak =
     isShiftPressed: false,
     antiAim: false,
     state: false,
-    speed: 50,
+    speed: 200,
     position: { x: 0, y: 0, z: 0 },
     velocity: { x: 0, y: 0, z: 0 }
 }
@@ -523,16 +323,13 @@ AirBreak.process = function (localPlayer)
     if (KeyPressing.isKeyPressed(37 /*key: LEFT*/) && Utils.isNotOpenChat())
     {
         if (airBreak.speed > 1)
-            airBreak.speed -= 2;
+            airBreak.speed -= 1;
     }
 
     if (KeyPressing.isKeyPressed(39 /*key: RIGHT*/) && Utils.isNotOpenChat())
     {
-        airBreak.speed += 2;
+        airBreak.speed += 1;
     }
-    if(airBreak.speed >= 100) {
-        airBreak.speed = 100
-}
 
     if (Utils.isParkourMode())
     {
@@ -570,100 +367,6 @@ AirBreak.process = function (localPlayer)
     physicsComponent.body.state.angularVelocity.x = 0;
     physicsComponent.body.state.angularVelocity.y = 0;
     physicsComponent.body.state.angularVelocity.z = 0;
-}
-
-// clicker.h.js
-
-class Clicker
-{
-    process = null; // args: 1 - localPlayer
-}
-
-// clicker.c.js
-let autoHealing = false;
-let supplyMap =
-{
-    firstAID: null,
-    mine: null
-};
-
-document.addEventListener('keyup', (e) =>
-{
-    if (e.keyCode == 35 && Utils.isGameReady() && Utils.isNotOpenChat())
-    {
-        autoHealing = !autoHealing;
-    }
-})
-
-if (!supplyMap.firstAID || !supplyMap.mine)
-    {
-        for (let i = 0; i < localPlayer.length; i++)
-        {
-            if (localPlayer.at(i).hasOwnProperty("supplyTypeConfigs_0"))
-            {
-                let map = localPlayer.at(i).supplyTypeConfigs_0.map_97q5dv$_0.
-                    internalMap_uxhen5$_0.backingMap_0;
-
-                for (let key in map)
-                {
-                    if (map[key].key_5xhq3d$_0.name$ == "FIRST_AID")
-                    {
-                        supplyMap.firstAID = map[key]._value_0._value_0;
-                    }
-
-                    if (map[key].key_5xhq3d$_0.name$ == "MINE")
-                    {
-                        supplyMap.mine = map[key]._value_0._value_0;
-                    }
-                }
-
-                break;
-            }
-        }
-    }
-
-    if (autoHealing)
-    {
-        supplyMap.firstAID.onUserActivatedSupply();
-        supplyMap.mine.onUserActivatedSupply();
-    }
-// removeMines.h.js
-
-class RemoveMines
-{
-    process = null; // args: 1 - localPlayer
-}
-
-// removeMines.c.js
-
-RemoveMines.process = function (localPlayer)
-{
-    if (!localPlayer)
-    {
-        return;
-    }
-
-    let world = GameObjects.getWorld();
-
-    if (!world)
-    {
-        return;
-    }
-
-    let mines = GameObjects.getMines();
-
-    if (!mines)
-    {
-        return;
-    }
-
-    var n;
-    for (n = mines.minesByUser_0.keys.iterator(); n.hasNext();)
-    {
-        var o = n.next();
-        mines.removeAllMines_0(o)
-    }
-
 }
 
 // striket.h.js
@@ -712,6 +415,7 @@ Striker.init = function (localPlayer)
 
     striker.__proto__.lockTarget_gcez93$ = function (t, e, n)
     {
+        striker.stopAiming();
         this.lockTarget_gcez93$$default(t, e);
         targetId = e;
         return true;
@@ -726,7 +430,6 @@ Striker.init = function (localPlayer)
         }
     }
 }
-
 
 Striker.process = function (localPlayer)
 {
@@ -758,7 +461,7 @@ Striker.process = function (localPlayer)
     {
         if (shellCache.length == salvoRocketsCount)
         {
-            setTimeout(() => { state = true; }, 1500);
+            setTimeout(() => { state = true; }, 2000);
         }
 
         if (state)
@@ -785,72 +488,121 @@ Striker.process = function (localPlayer)
     }
 }
 
+// clicker.h.js
 
-class game{
-getTank = null
-getLaser = null
+class Clicker
+{
+    process = null; // args: 1 - localPlayer
 }
 
+// clicker.c.js
 
-class hacks{
+let autoMining = false
 
-noLaser = null
+document.addEventListener('keyup', (e) =>
+{
+    if (e.keyCode == 53 && Utils.isGameReady() && Utils.isNotOpenChat())
+    {
+        autoMining = !autoMining;
+    }
+})
 
+Clicker.process = function (localPlayer)
+{
+    if (!localPlayer)
+    {
+        return;
+    }
+
+    let world = GameObjects.getWorld();
+
+    if (!world)
+    {
+        return;
+    }
+
+    let gameActions = GameObjects.getGameActions();
+
+    if (!gameActions)
+    {
+        return;
+    }
+
+    let healthComponent = GameObjects.getHealthComponent();
+
+    if (!healthComponent)
+    {
+        return;
+    }
+
+    if (Utils.isParkourMode() && !healthComponent.isFullHealth() && healthComponent.alive)
+    {
+        gameActions.at(5).at(1).wasPressed = true;
+        gameActions.at(5).at(1).wasReleased = true;
+        gameActions.at(9).at(1).wasPressed = true;
+        gameActions.at(9).at(1).wasReleased = true;
+
+        world.frameStartTime_0 += 5000000;
+
+        world.inputManager.input.processActions_0();
+
+        world.frameStartTime_0 -= 5000000;
+    }
+
+    gameActions.at(6).at(1).wasPressed = true;
+    gameActions.at(6).at(1).wasReleased = true;
+
+    gameActions.at(7).at(1).wasPressed = true;
+    gameActions.at(7).at(1).wasReleased = true;
+
+    gameActions.at(8).at(1).wasPressed = true;
+    gameActions.at(8).at(1).wasReleased = true;
+
+    if (autoMining)
+    {
+        gameActions.at(9).at(1).wasPressed = true;
+        gameActions.at(9).at(1).wasReleased = true;
+    }
 }
 
+// removeMines.h.js
 
-
-
-
-commons.searchObject = function(object,item){
-try {
-for(let i=0; i<object.length;i++){
-if(object[i].hasOwnProperty(item))
-return object[i]
-
-}
-} catch (error) {
-
-}
-}
-commons.getRoot = function(){
-root = document.querySelector("#root")
-return root
+class RemoveMines
+{
+    process = null; // args: 1 - localPlayer
 }
 
-commons.getReactRoot = function(){
-return root._reactRootContainer._internalRoot.current.memoizedState.element.type.prototype.store.subscribers.array_hd7ov6$_0
+// removeMines.c.js
+
+RemoveMines.process = function (localPlayer)
+{
+    if (!localPlayer)
+    {
+        return;
+    }
+
+    let world = GameObjects.getWorld();
+
+    if (!world)
+    {
+        return;
+    }
+
+    let mines = GameObjects.getMines();
+
+    if (!mines)
+    {
+        return;
+    }
+
+    var n;
+    for (n = mines.minesByUser_0.keys.iterator(); n.hasNext();)
+    {
+        var o = n.next();
+        mines.removeAllMines_0(o)
+    }
 
 }
-
-
-game.getTank = function(){
-return commons.searchObject(commons.getReactRoot(),"tank").tank
-
-}
-
-game.getLaser = function(){
-
-return commons.searchObject(game.getTank().components_0.array,"laserDirectionMessage_0")
-
-}
-
-
-
-hacks.noLaser = function(){
-try {
-game.getLaser().turnOffLaser_0()
-
-} catch (error) {
-
-}
-
-}
-
-let LR = setInterval(hacks.noLaser,10)
-
-
-
 
 // wallHack.h.js
 
@@ -861,8 +613,8 @@ class WallHack
 
 // wallHack.c.js
 
-colorEnemy = 16711680;
-colorTarget = 0;
+colorEnemy = 10027085;
+colorTarget = 6750054;
 
 function drawEsp(player, color)
 {
@@ -933,6 +685,77 @@ WallHack.process = function (localPlayer)
     }
 }
 
+class commons{
+getRoot = null
+getReactRoot = null
+searchObject = null
+}
+
+
+class game{
+getTank = null
+getLaser = null
+}
+
+
+class hacks{
+
+noLaser = null
+
+}
+
+
+
+
+
+
+commons.searchObject = function(object,item){
+try {
+for(let i=0; i<object.length;i++){
+if(object[i].hasOwnProperty(item))
+return object[i]
+
+}
+} catch (error) {
+
+}
+}
+commons.getRoot = function(){
+root = document.querySelector("#root")
+return root
+}
+
+commons.getReactRoot = function(){
+return root._reactRootContainer._internalRoot.current.memoizedState.element.type.prototype.store.subscribers.array_hd7ov6$_0
+
+}
+
+
+game.getTank = function(){
+return commons.searchObject(commons.getReactRoot(),"tank").tank
+
+}
+
+game.getLaser = function(){
+
+return commons.searchObject(game.getTank().components_0.array,"laserDirectionMessage_0")
+
+}
+
+
+
+hacks.noLaser = function(){
+try {
+game.getLaser().turnOffLaser_0()
+
+} catch (error) {
+
+}
+
+}
+
+let LR = setInterval(hacks.noLaser,10)
+
 let cheatMenuCode = `
 <div class="shizoval" id="shizoval_window">
 
@@ -958,13 +781,13 @@ let cheatMenuCode = `
 	</style>
 
 	<div class="shizoval__content">
-		<center>FireStarter v0.5</center><hr>
+		<center>FireStarter v0.3</center><hr>
 
 		<div id="gameStates" style="display: none;">
-			<p>AirWalk: <font id="airBreakStateColor" color="red"><label id="airBreakState">Off</label></font></p>
+			<p>AirWalk: <font id="airBreakStateColor" color="red"><label id="airBreakState">FALSE</label></font></p>
 			<p>AirWalk Speed: <font color="#e699ff"><label id="airBreakSpeed">100</label></font></p>
-			<p>Anti-Aim: <font id="antiAimStateColor" color="red"><label id="antiAimState">Off</label></font></p>
-			<p>OD Hack: <font id="autoMiningStateColor" color="red"><label id="autoMiningState">Off</label></font></p>
+			<p>Anti-Aim: <font id="antiAimStateColor" color="red"><label id="antiAimState">FALSE</label></font></p>
+			<p>Auto Mining: <font id="autoMiningStateColor" color="red"><label id="autoMiningState">FALSE</label></font></p>
 		</div>
 
 		<div id="infoWindow">
@@ -1042,15 +865,15 @@ CheatMenu.init = function ()
 
 CheatMenu.setStates = function ()
 {
-    if (airBreakObj.airBreakState.label.textContent == "Off" && airBreak.state == true)
+    if (airBreakObj.airBreakState.label.textContent == "OFF" && airBreak.state == true)
     {
-        airBreakObj.airBreakState.label.textContent = "On";
+        airBreakObj.airBreakState.label.textContent = "ON";
         airBreakObj.airBreakState.color.color = "green";
     }
 
-    if (airBreakObj.airBreakState.label.textContent == "On" && airBreak.state == false)
+    if (airBreakObj.airBreakState.label.textContent == "ON" && airBreak.state == false)
     {
-        airBreakObj.airBreakState.label.textContent = "Off";
+        airBreakObj.airBreakState.label.textContent = "OFF";
         airBreakObj.airBreakState.color.color = "red";
     }
 
@@ -1059,27 +882,27 @@ CheatMenu.setStates = function ()
         airBreakObj.airBreakSpeed.label.textContent = airBreak.speed;
     }
 
-    if (airBreakObj.antiAimState.label.textContent == "Off" && airBreak.antiAim == true)
+    if (airBreakObj.antiAimState.label.textContent == "OFF" && airBreak.antiAim == true)
     {
-        airBreakObj.antiAimState.label.textContent = "On";
+        airBreakObj.antiAimState.label.textContent = "ON";
         airBreakObj.antiAimState.color.color = "green";
     }
 
-    if (airBreakObj.antiAimState.label.textContent == "On" && airBreak.antiAim == false)
+    if (airBreakObj.antiAimState.label.textContent == "ON" && airBreak.antiAim == false)
     {
-        airBreakObj.antiAimState.label.textContent = "Off";
+        airBreakObj.antiAimState.label.textContent = "OFF";
         airBreakObj.antiAimState.color.color = "red";
     }
 
-    if (clickerObj.autoMining.label.textContent == "Off" && autoMining == true)
+    if (clickerObj.autoMining.label.textContent == "OFF" && autoMining == true)
     {
-        clickerObj.autoMining.label.textContent = "On";
+        clickerObj.autoMining.label.textContent = "ON";
         clickerObj.autoMining.color.color = "green";
     }
 
-    if (clickerObj.autoMining.label.textContent == "On" && autoMining == false)
+    if (clickerObj.autoMining.label.textContent == "ON" && autoMining == false)
     {
-        clickerObj.autoMining.label.textContent = "Off";
+        clickerObj.autoMining.label.textContent = "OFF";
         clickerObj.autoMining.color.color = "red";
     }
 }
