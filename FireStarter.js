@@ -581,13 +581,13 @@ class Clicker
 
 // clicker.c.js
 let autoHealing = false;
-let supplyMap = 
+let supplyMap =
 {
     firstAID: null,
     mine: null
 };
 
-document.addEventListener('keyup', (e) => 
+document.addEventListener('keyup', (e) =>
 {
     if (e.keyCode == 35 && Utils.isGameReady() && Utils.isNotOpenChat())
     {
@@ -783,12 +783,6 @@ Striker.process = function (localPlayer)
             }
         }
     }
-}
-
-class commons{
-getRoot = null
-getReactRoot = null
-searchObject = null
 }
 
 
