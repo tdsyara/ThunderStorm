@@ -580,333 +580,53 @@ class Clicker
 }
 
 // clicker.c.js
+let autoHealing = false;
+let supplyMap = 
+{
+    firstAID: null,
+    mine: null
+};
 
-let autoMining = false
-
-document.addEventListener('keyup', (e) =>
+document.addEventListener('keyup', (e) => 
 {
     if (e.keyCode == 35 && Utils.isGameReady() && Utils.isNotOpenChat())
     {
-        autoMining = !autoMining;
+        autoHealing = !autoHealing;
     }
 })
 
-class commons{
-getRoot = null
-getReactRoot = null
-searchObject = null
-}
-
-class game{
-getTankPhysics = null
-getTank = null
-getWorld = null
-getMines = null
-getFlags = null
-getPlayers = null
-getMapBoundary = null
-getBattleState = null
-getSupplies = null
-getHealth = null
-getStriker = null
-getCamera = null
-}
-
-
-class hacks{
-airWalk = null
-clicker = null
-flagTP = null
-spawnRockets = null
-oneHitKill = null
-noLaser = null
-autoHeal = null
-simpleTP = null
-playerTP = null
-
-
-}
-
-
-class vars{
-repair = null
-DD = null
-
-
-}
-
-
-
-commons.searchObject = function(object,item){
-try {
-for(let i=0; i<object.length;i++){
-if(object[i].hasOwnProperty(item))
-return object[i]
-
-}
-} catch (error) {
-
-}
-}
-commons.getRoot = function(){
-root = document.querySelector("#root")
-return root
-}
-
-commons.getReactRoot = function(){
-return root._reactRootContainer._internalRoot.current.memoizedState.element.type.prototype.store.subscribers.array_hd7ov6$_0
-
-}
-
-
-game.getTank = function(){
-return commons.searchObject(commons.getReactRoot(),"tank").tank
-
-
-
-
-}
-
-game.getWorld = function(){
-return game.getTank().world
-
-}
-
-game.getMines = function(){
-return game.getWorld().entities_0.array_hd7ov6$_0.at(0).components_0.array.at(15);
-
-
-
-}
-
-game.getMapBoundary = function(){
-return game.getWorld().entities_0.array_hd7ov6$_0.at(0).components_0.array.at(0).bounds
-}
-
-
-game.getPlayers = function(){
-return game.getWorld().physicsScene_0.bodies_0.array_hd7ov6$_0
-
-
-
-}
-game.getBattleState = function(){
-
-return commons.getReactRoot().at(1).state.inBattle
-}
-
-game.getChatState = function(){
-return document.querySelector(".sc-bwzfXH iokmvL")
-}
-
-game.getStriker = function(){
-for(let i=0; i>game.getTank().components_0.array.length;i++){
-if(game.getTank().components_0.array[i].hasOwnProperty("strikerWeapon_jjsiik$_0")){
-return game.getTank().components_0.array[i]
-
-
-}
-}
-}
-
-
-game.getHealth = function(){
-return game.getTank().components_0.array[1].isFullHealth()
-
-
-}
-
-game.getTankPhysics = function(){
-return game.getTank().components_0.array[5].tankPhysicsComponent_tczrao$_0
-
-
-
-}
-
-game.getCamera = function(){
-for (let i = 0; i < game.getTank().components_0.array.length; i++)
-  {
-    if(game.getTank().components_0.array[i].hasOwnProperty("followCamera_w8ai3w$_0"))
-    return game.getTank().components_0.array[i].followCamera_0.currState_0
-
-  }
-}
-
-
-game.getSupplies = function(supply){
-try {
-for(key in game.getTank().components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0){
-if(game.getTank().components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0[key].key_5xhq3d$_0.name$ == supply){
-return key
-}
-
-
-}
-} catch (error) {
-
-}
-
-
-}
-
-function getSupplyArrays(){
-try {
-window.mines = game.getSupplies("MINE")
-window.repairs = game.getSupplies("FIRST_AID")
-
-
-} catch (error) {
-
-}
-}
-
-supps = setInterval(getSupplyArrays,500)
-
-Clicker.process = function (localPlayer)
-{
-    if (!localPlayer)
+if (!supplyMap.firstAID || !supplyMap.mine)
     {
-        return;
+        for (let i = 0; i < localPlayer.length; i++)
+        {
+            if (localPlayer.at(i).hasOwnProperty("supplyTypeConfigs_0"))
+            {
+                let map = localPlayer.at(i).supplyTypeConfigs_0.map_97q5dv$_0.
+                    internalMap_uxhen5$_0.backingMap_0;
+
+                for (let key in map)
+                {
+                    if (map[key].key_5xhq3d$_0.name$ == "FIRST_AID")
+                    {
+                        supplyMap.firstAID = map[key]._value_0._value_0;
+                    }
+
+                    if (map[key].key_5xhq3d$_0.name$ == "MINE")
+                    {
+                        supplyMap.mine = map[key]._value_0._value_0;
+                    }
+                }
+
+                break;
+            }
+        }
     }
 
-    let world = GameObjects.getWorld();
-
-    if (!world)
+    if (autoHealing)
     {
-        return;
+        supplyMap.firstAID.onUserActivatedSupply();
+        supplyMap.mine.onUserActivatedSupply();
     }
-
-    let gameActions = GameObjects.getGameActions();
-
-    if (!gameActions)
-    {
-        return;
-    }
-
-    let healthComponent = GameObjects.getHealthComponent();
-
-    if (!healthComponent)
-    {
-        return;
-    }
-
-    if (Utils.isParkourMode() && !healthComponent.isFullHealth() && healthComponent.alive)
-    {
-        gameActions.at(5).at(1).wasPressed = true;
-        gameActions.at(5).at(1).wasReleased = true;
-        gameActions.at(9).at(1).wasPressed = true;
-        gameActions.at(9).at(1).wasReleased = true;
-
-        world.frameStartTime_0 += 5000000;
-
-        world.inputManager.input.processActions_0();
-
-        world.frameStartTime_0 -= 5000000;
-    }
-
-    gameActions.at(6).at(1).wasPressed = true;
-    gameActions.at(6).at(1).wasReleased = true;
-
-    gameActions.at(7).at(1).wasPressed = true;
-    gameActions.at(7).at(1).wasReleased = true;
-
-    gameActions.at(8).at(1).wasPressed = true;
-    gameActions.at(8).at(1).wasReleased = true;
-
-    if (autoMining)
-    {
-
-
-
-try {
-game.getTank().components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0[mines]._value_0._value_0.onUserActivatedSupply()
-game.getTank().components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0[repairs]._value_0._value_0.onUserActivatedSupply()
-
-
-
-} catch (error) {
-
-}
-
-
-
-
-
-/*hacks.clicker = function(){ try {
-game.getSupplies("MINE")._value_0._value_0.onUserActivatedSupply()
-game.getSupplies("FIRST_AID")._value_0._value_0.onUserActivatedSupply()
-} catch (error) {
-
-}
-
-}*/
-
-
-
-
-
-function rapidUpdate(){
-
-try {
-   game.getTank().components_0.array[37].needImmediateUpdate_0  = true
-} catch (error) {
-
- }}
-let ru = setInterval(rapidUpdate,10)
-
-
-
-/*function aoo(supply){
-for(key in globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0){
-if(globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0[key].key_5xhq3d$_0.name$ == supply){
-return globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0[key]
-}
-
-
-}
-}*/
-
-
-
-
-
-
-
-
-/*function aoo(supply){
-for(key in globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0){
-if(globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0[key].key_5xhq3d$_0.name$ == supply){
-return globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0[key]
-}
-
-
-}
-}*/
-
-
-
-
-
-
-
-
-/*function aoo(supply){
-for(key in globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0){
-if(globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0[key].key_5xhq3d$_0.name$ == supply){
-return globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0[key]
-}
-
-
-}
-}*/
-
-
-
-
-
-    }
-}
-
 // removeMines.h.js
 
 class RemoveMines
