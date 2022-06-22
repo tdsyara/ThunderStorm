@@ -294,42 +294,6 @@ childMine.removeMine_0()
 }
 
 
-
-
-
-
-
-/*hacks.clicker = function(){ try {
-game.getSupplies("MINE")._value_0._value_0.onUserActivatedSupply()
-game.getSupplies("FIRST_AID")._value_0._value_0.onUserActivatedSupply()
-game.getSupplies("DOUBLE_ARMOR")._value_0._value_0.onUserActivatedSupply()
-game.getSupplies("DOUBLE_DAMAGE")
-  ._value_0._value_0.onUserActivatedSupply()
-game.getSupplies("NITRO")._value_0._value_0.onUserActivatedSupply()
-} catch (error) {
-
-}
-
-}*/
-
-
-
-
-
-
-
-
-/*function aoo(supply){
-for(key in globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0){
-if(globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0[key].key_5xhq3d$_0.name$ == supply){
-return globalArray[corrArray].tank.components_0.array[27].supplyTypeConfigs_0.entries.$outer.map_97q5dv$_0.internalMap_uxhen5$_0.backingMap_0[key]
-}
-
-
-}
-}*/
-
-
 root = document.querySelector("#root")
 stateWindow = document.createElement("div")
 stateWindow_style={
